@@ -8,7 +8,7 @@ AllCops:
     - lib/**/*.rb
 
   Exclude:
-    - vendor/**/*.rb
+    - vendor/**/*
 
 require:
   - rubocop-performance
