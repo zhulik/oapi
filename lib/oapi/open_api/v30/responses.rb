@@ -6,6 +6,8 @@ class OAPI::OpenAPI::V30::Responses < OAPI::Types::Map
 
     property :content, OAPI::OpenAPI::V30::Content
     property :headers, OAPI::OpenAPI::V30::Headers
+
+    property :links, OAPI::OpenAPI::V30::Links
   end
 
   item :response, Response

@@ -5,9 +5,13 @@ class OAPI::OpenAPI::V30::Serializers::Ruby < OAPI::OpenAPI::V30::Serializers::S
 
   MAP_TEMPLATE = %(
 <% object.store.each do |key, value| -%>
-  <%= object.class.item_name %>("<%= key %>") do
-    <%= serialize_if_supported(value) %>
-  end
+<% if value.is_a?(OAPI::Ref) -%>
+<%= object.class.item_name %>("<%= key %>", ref: <%= serialize(value) %>)
+<% else -%>
+<%= object.class.item_name %>("<%= key %>") do
+  <%= serialize_if_supported(value) %>
+end
+<% end -%>
 <% end -%>
 )
 
@@ -22,13 +26,13 @@ end
   OBJECT_TEMPLATE = %(
 <% object.properties.each do |prop, value| -%>
 <% if value.is_a?(OAPI::Ref) -%>
-<%= prop%>(ref: <%= serialize(value) %>)
+<%= prop %>(ref: <%= serialize(value) %>)
 <% elsif supported?(value) -%>
 <%= prop %> do
   <%= serialize(value) %>
 end
 <% elsif !value.nil? -%>
-<%= prop %> <%= value.inspect %>
+<%= prop %> <%= value_to_ruby(value) %>
 <% end -%>
 <% end -%>
 )
@@ -43,6 +47,13 @@ end
     def serialize(node) = OAPI::OpenAPI::V30::Serializers::Ruby.serialize(node)
     def supported?(node) = OAPI::OpenAPI::V30::Serializers::Ruby.supported?(node)
     def serialize_if_supported(node) = OAPI::OpenAPI::V30::Serializers::Ruby.serialize_if_supported(node)
+
+    def value_to_ruby(value)
+      return value.inspect if [Numeric, String, Array, TrueClass, FalseClass].any? { value.is_a?(_1) }
+      return "(#{value.inspect})" if value.is_a?(Hash)
+
+      raise ArgumentError, "value: #{value}"
+    end
   end
 
   def serialize_ref(ref) = ref.ref.inspect

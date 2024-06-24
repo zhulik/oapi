@@ -8,11 +8,11 @@ class OAPI::Types::Object
   class << self
     def parse(json)
       new.tap do |obj|
-        (properties || []).each do |name, type|
+        properties.each do |name, type|
           value = json[name.camelize]
           next if value.nil?
 
-          value = type.parse(value) if value.is_a?(Hash) || (value.is_a?(Array) && type)
+          value = type.parse(value) if type
           obj.send(name, value)
         end
       end

@@ -43,20 +43,6 @@ class OAPI::OpenAPI::V30::Components < OAPI::Types::Object
     item :scheme, Scheme
   end
 
-  class Links < OAPI::Types::Map
-    class Link < OAPI::Types::Object
-      property :operation_ref
-      property :operation_id
-      property :request_body
-      property :description
-
-      property :parameters # TODO: a custom type? https://spec.openapis.org/oas/v3.0.3#fixed-fields-16
-      property :server, OAPI::OpenAPI::V30::Servers::Server
-    end
-
-    item :link, Link
-  end
-
   property :schemas, Schemas
   property :responses, OAPI::OpenAPI::V30::Responses
   property :parameters, Parameters
@@ -64,6 +50,6 @@ class OAPI::OpenAPI::V30::Components < OAPI::Types::Object
   property :request_bodies, RequestBodies
   property :headers, OAPI::OpenAPI::V30::Headers
   property :security_schemes, SecuritySchemes
-  property :links, Links
+  property :links, OAPI::OpenAPI::V30::Links
   property :callbacks, OAPI::OpenAPI::V30::Callbacks
 end

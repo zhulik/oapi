@@ -15,8 +15,12 @@ class OAPI::Types::Map < OAPI::Types::Object
       @item_name = name
       @item_type = type
 
-      define_method(name) do |key, &block|
+      define_method(name) do |key, ref: nil, &block|
         raise ArgumentError, "'#{key}' already exists" if @store.include?(key.to_s)
+
+        raise ArgumentError, "ref and block are mutual exclusive" if ref && block
+
+        return @store[key] = OAPI::Ref.new(ref) if ref
 
         @store[key] = type.new(&block)
       end

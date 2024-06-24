@@ -296,7 +296,7 @@ RSpec.describe OAPI do
 
     Dir.glob("spec/fixtures/open_api/**/*.yaml").each do |path|
       context "when parsing #{path}" do
-        let(:json) { YAML.safe_load_file("spec/fixtures/open_api/3.0/petstore.yaml", symbolize_names: true) }
+        let(:json) { YAML.safe_load_file(path, symbolize_names: true) }
 
         it "returns parsed openapi definition" do
           expect(subject.to_openapi.deep_symbolize_keys).to eq(json.deep_symbolize_keys)
