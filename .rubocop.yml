@@ -6,9 +6,9 @@ AllCops:
   Include:
     - spec/**/*.rb
     - lib/**/*.rb
-    - main.rb
 
-  Exclude: []
+  Exclude:
+    - vendor/**/*.rb
 
 require:
   - rubocop-performance
