@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oapi (0.1.2)
+    oapi (0.1.3)
       zeitwerk (~> 2.6)
 
 GEM
