@@ -19,7 +19,5 @@ class OAPI::Types::Array < OAPI::Types::Object
         @store << type.new(&block)
       end
     end
-
-    def parse(json) = new(json.map { item_type.parse(_1) })
   end
 end

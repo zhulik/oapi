@@ -25,12 +25,5 @@ class OAPI::Types::Map < OAPI::Types::Object
         @store[key] = type.new(&block)
       end
     end
-
-    def parse(json)
-      store = json.transform_values do |value|
-        item_type ? item_type.parse(value) : value
-      end
-      new(store)
-    end
   end
 end

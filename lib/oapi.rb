@@ -34,7 +34,7 @@ module OAPI
       version = json[:openapi]
       raise UnsupportedSpecVersion, "unsupported version #{version}" unless version.start_with?("3.0")
 
-      OAPI::OpenAPI::V30::Definition.parse(json)
+      OAPI::OpenAPI::V30::Parsers::JSON.parse(json)
     end
   end
 end
