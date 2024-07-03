@@ -11,12 +11,9 @@ class OAPI::OpenAPI::V30::Serializers::JSON < OAPI::OpenAPI::V30::Serializers::S
   def serialize_array(array) = array.store.map { serialize(_1) }
 
   def serialize_object(object)
-    object.properties.each_with_object({}) do |(name, value), acc|
-      next if value.nil?
-
-      name = :in if name == :_in
-
-      acc[name.camelize] = serialize_if_supported(value)
-    end
+    object.properties
+          .compact
+          .transform_keys { (_1 == :in ? :_in : _1.camelize) }
+          .transform_values { serialize_if_supported(_1) }
   end
 end
