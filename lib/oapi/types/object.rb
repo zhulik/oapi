@@ -2,4 +2,5 @@
 
 class OAPI::Types::Object
   include OAPI::Properties
+  include OAPI::Extensions
 end

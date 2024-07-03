@@ -14,6 +14,7 @@ class OAPI::OpenAPI::V30::Serializers::JSON < OAPI::OpenAPI::V30::Serializers::S
     object.properties
           .compact
           .transform_keys { (_1 == :in ? :_in : _1.camelize) }
+          .merge(object.extensions.transform_keys { _1.to_s.tr("_", "-").to_sym })
           .transform_values { serialize_if_supported(_1) }
   end
 end

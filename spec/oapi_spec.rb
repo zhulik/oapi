@@ -1,101 +1,101 @@
 # frozen_string_literal: true
 
 RSpec.describe OAPI do
-  it "has a version number" do
-    expect(OAPI::VERSION).not_to be_nil
-  end
+  let(:definition) do
+    described_class.define do
+      openapi "3.0"
 
-  describe ".define" do
-    it "builds an openapi definition" do
-      definition = described_class.define do
-        openapi "3.0"
+      x_test_extension do
+        {
+          foo: "bar"
+        }
+      end
 
-        info do
-          title "Awesome api"
-          description "Some awesome api description"
-          terms_of_service "htts://example.com"
-          version "1.0"
+      info do
+        title "Awesome api"
+        description "Some awesome api description"
+        terms_of_service "htts://example.com"
+        version "1.0"
 
-          contact do
-            name "John Doe"
-            url "htts://example.com"
-            email "john@example.com"
-          end
-
-          license do
-            name "MIT"
-            url "htts://example.com"
-          end
+        contact do
+          name "John Doe"
+          url "htts://example.com"
+          email "john@example.com"
         end
 
-        servers do
-          server do
-            url "https://example.com"
-            description "server description"
+        license do
+          name "MIT"
+          url "htts://example.com"
+        end
+      end
 
-            variables do
-              variable(:some_variable) do
-                enum ["foo", "bar"]
-                default "some_value"
-                description "variable description"
-              end
+      servers do
+        server do
+          url "https://example.com"
+          description "server description"
+
+          variables do
+            variable(:some_variable) do
+              enum ["foo", "bar"]
+              default "some_value"
+              description "variable description"
             end
           end
         end
+      end
 
-        tags do
-          tag do
-            name "some tag"
-            description "tag description"
+      tags do
+        tag do
+          name "some tag"
+          description "tag description"
+
+          external_docs do
+            description "tag external doc"
+            url "https://example.com"
+          end
+        end
+      end
+
+      external_docs do
+        description "api external doc"
+        url "https://example.com"
+      end
+
+      security([{ foo: ["bar", "baz"] }])
+
+      paths do
+        path("/pets") do
+          get do
+            description "operation description"
+            summary "operation summary"
+            operation_id "petsGet"
+
+            deprecated false
+            tags ["tag3", "tag4"]
+            security([{ foo: ["bar", "baz"] }])
 
             external_docs do
-              description "tag external doc"
+              description "operation external doc"
               url "https://example.com"
             end
-          end
-        end
 
-        external_docs do
-          description "api external doc"
-          url "https://example.com"
-        end
-
-        security([{ foo: ["bar", "baz"] }])
-
-        paths do
-          path("/pets") do
-            get do
-              description "operation description"
-              summary "operation summary"
-              operation_id "petsGet"
-
-              deprecated false
-              tags ["tag3", "tag4"]
-              security([{ foo: ["bar", "baz"] }])
-
-              external_docs do
-                description "operation external doc"
-                url "https://example.com"
-              end
-
-              callbacks do
-                callback(:oncallback) do
-                  path("/callback") do
-                    post do
-                      responses do
-                        response(200) do
-                          description "callback response description"
-                        end
+            callbacks do
+              callback(:oncallback) do
+                path("/callback") do
+                  post do
+                    responses do
+                      response(200) do
+                        description "callback response description"
                       end
+                    end
 
-                      request_body do
-                        content do
-                          media_type("application/json") do
-                            schema do
-                              {
-                                type: "object"
-                              }
-                            end
+                    request_body do
+                      content do
+                        media_type("application/json") do
+                          schema do
+                            {
+                              type: "object"
+                            }
                           end
                         end
                       end
@@ -103,45 +103,45 @@ RSpec.describe OAPI do
                   end
                 end
               end
+            end
 
-              parameters do
-                parameter do
-                  name "Some parameter"
-                  _in "query"
-                  description "some parameter description"
-                  required true
-                  deprecated false
-                  explode false
-                  allow_reserved false
-                  example "some value"
-                end
+            parameters do
+              parameter do
+                name "Some parameter"
+                _in "query"
+                description "some parameter description"
+                required true
+                deprecated false
+                explode false
+                allow_reserved false
+                example "some value"
               end
+            end
 
-              servers do
-                server do
-                  url "https://example.com"
-                  description "server description"
-                end
+            servers do
+              server do
+                url "https://example.com"
+                description "server description"
               end
+            end
 
-              responses do
-                response(200) do
-                  description "/pets description"
+            responses do
+              response(200) do
+                description "/pets description"
 
-                  content do
-                    media_type("application/json") do
-                      schema do
-                        {
-                          type: "object"
-                        }
-                      end
+                content do
+                  media_type("application/json") do
+                    schema do
+                      {
+                        type: "object"
+                      }
+                    end
 
-                      examples do
-                        example(:someExample) do # rubocop:disable RSpec/NoExpectationExample
-                          summary "example summary"
-                          description "example description"
-                          value "example value"
-                        end
+                    examples do
+                      example(:someExample) do # rubocop:disable RSpec/NoExpectationExample, RSpec/RepeatedDescription
+                        summary "example summary"
+                        description "example description"
+                        value "example value"
                       end
                     end
                   end
@@ -150,82 +150,90 @@ RSpec.describe OAPI do
             end
           end
         end
+      end
 
-        components do
-          schemas do
-            schema(:someSchema) do
-              {
-                type: "object"
-              }
-            end
+      components do
+        schemas do
+          schema(:someSchema) do
+            {
+              type: "object"
+            }
           end
+        end
 
-          responses do
-            response(:someResponse) do
-              description "Response Description"
-            end
+        responses do
+          response(:someResponse) do
+            description "Response Description"
           end
+        end
 
-          parameters do
-            parameter(:someParameter) do
-              name "someParamter"
-              _in "query"
-            end
+        parameters do
+          parameter(:someParameter) do
+            name "someParamter"
+            _in "query"
           end
+        end
 
-          examples do
-            example(:someExample) do # rubocop:disable RSpec/NoExpectationExample
-              summary "example summary"
-              description "example description"
-              external_value "htts://exampl.com"
-            end
+        examples do
+          example(:someExample) do # rubocop:disable RSpec/NoExpectationExample, RSpec/RepeatedDescription
+            summary "example summary"
+            description "example description"
+            external_value "htts://exampl.com"
           end
+        end
 
-          request_bodies do
-            body(:someBody) do
-              content do
-                media_type("application/json")
-              end
-            end
-          end
-
-          headers do
-            header(:someHeader) do
-              description "header description"
-              schema ref: "#/components/schemas/someSchema"
-            end
-          end
-
-          security_schemes do
-            scheme(:api_key) do
-              type "apiKey"
-              name "key"
-              _in "header"
-            end
-          end
-
-          links do
-            link(:someLink) do
-              operation_id "linkOperationId"
-              description "link description"
-
-              parameters({})
-              request_body({})
-
-              server do
-                url "https://example.com"
-              end
-            end
-          end
-
-          callbacks do
-            callback(:someCallback) do
-              path("/callback")
+        request_bodies do
+          body(:someBody) do
+            content do
+              media_type("application/json")
             end
           end
         end
-      end.to_openapi
 
+        headers do
+          header(:someHeader) do
+            description "header description"
+            schema ref: "#/components/schemas/someSchema"
+          end
+        end
+
+        security_schemes do
+          scheme(:api_key) do
+            type "apiKey"
+            name "key"
+            _in "header"
+          end
+        end
+
+        links do
+          link(:someLink) do
+            operation_id "linkOperationId"
+            description "link description"
+
+            parameters({})
+            request_body({})
+
+            server do
+              url "https://example.com"
+            end
+          end
+        end
+
+        callbacks do
+          callback(:someCallback) do
+            path("/callback")
+          end
+        end
+      end
+    end.to_openapi
+  end
+
+  it "has a version number" do
+    expect(OAPI::VERSION).not_to be_nil
+  end
+
+  describe ".define" do
+    it "builds an openapi definition" do
       expect(definition).to be_a_valid_openapi_definition
 
       expect(definition).to eq(
@@ -286,8 +294,11 @@ RSpec.describe OAPI do
           requestBody: {},
           server: { url: "https://example.com" } } },
                         callbacks: { someCallback: { "/callback" => {} } } },
-          openapi: "3.0" }
+          openapi: "3.0",
+          "x-test-extension": { foo: "bar" } }
       )
+
+      expect(described_class.parse(definition).to_openapi).to eq(definition)
     end
   end
 

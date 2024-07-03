@@ -22,13 +22,17 @@ class OAPI::OpenAPI::V30::Parsers::JSON
       raise ArgumentError, "unknown type #{type}"
     end
 
-    def parse_object(input, klass)
+    def parse_object(input, klass) # rubocop:disable Metrics/AbcSize
+      # TODO: make sure all keys in input are either known properties or x-tensions.
       klass.new.tap do |obj|
         klass.properties.each do |name, type|
           value = input[name.camelize]
 
           obj.send(name, parse_type(value, type)) unless value.nil?
         end
+
+        input.select { _1.to_s.start_with?("x-") }
+             .each { obj.extensions[_1.to_s.tr("-", "_").to_sym] = _2 }
       end
     end
 
